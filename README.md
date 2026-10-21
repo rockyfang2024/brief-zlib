@@ -19,9 +19,50 @@
 
 项目提供 **[find-zlibrary-links Skill](skills/find-zlibrary-links/SKILL.md)**，指导 AI 查找候选入口、验证可用性、测试访问速度并整理结果。
 
+在支持加载 Skill 的 AI 工具中安装后使用；也可以让能访问本仓库的 AI 阅读 `skills/find-zlibrary-links/SKILL.md` 并按其流程执行。仅输入技能名称并不会自动安装它。
+
 使用示例：
 
-> 请使用 find-zlibrary-links，查找当前可用的 Z-Library 地址，测试直连与代理访问，并更新地址表。
+> 请读取 skills/find-zlibrary-links/SKILL.md，检查现有地址并更新时间。
+>
+> 请使用 find-zlibrary-links，从其他 GitHub 仓库发现新地址，验证后补入表格。
+>
+> 请使用 find-zlibrary-links，在我的网络环境下重新测速，生成自己的地址清单。
+
+## 在自己的网络下检测
+
+需要 Python 3.9+ 和 curl，无需安装第三方 Python 包。在仓库根目录运行：
+
+```sh
+python3 scripts/check_links.py --output /tmp/brief-zlib-results.json
+```
+
+默认逐个地址检测 3 次，输出 JSON，不自动改写 README。需要代理对照时，追加 `--proxy http://127.0.0.1:实际端口`；该参数会增加代理测试，仍保留直连测试。Windows 用户可把输出路径换成临时目录中的路径。
+
+候选地址保存在 [sources.json](sources.json)：`url` 为入口，`source` 为来源，`enabled` 控制是否检测，`allowed_hosts` 为已核对的入口及跳转域名。新跳转域名会标为待确认，人工核对后再加入配置；不要直接信任任意跳转。
+
+结果区分 `homepage`（首页）、`challenge`（验证页）、`network_error`（连接失败）、`http_error`（HTTP 错误）和 `unconfirmed`（待确认）。前两种按本项目标准算可用。耗时为成功请求的中位数，同时输出成功次数和是否波动；退出码 `0` 表示至少一个入口可达，`1` 表示均未确认可达，`2` 表示配置或执行错误。
+
+根据结果更新 README 时，保留人工网络结论、标明测试范围，并把 UTC 时间转换为使用者所在时区。脚本禁用显式代理不等于排除了 VPN 或路由器代理。
+
+<details>
+<summary>访问说明：验证页、网络差异与测速</summary>
+
+**为什么打开后显示浏览器验证？**
+
+站点可能先检查浏览器。本项目把到达站点验证页视为入口可用，不保证验证后能登录或下载。脚本只读取响应，不破解或提交验证令牌。
+
+**为什么别人能打开，我打不开？**
+
+地区、运营商、DNS、代理以及站点访问策略可能不同。请在自己的网络下检测；云端检测不能证明国内网络可以直连。
+
+**访问速度是怎么测出来的？**
+
+脚本测量获取 HTML 的时间，包含跳转，默认取 3 次成功请求的中位数；有失败时会报告波动。验证页的响应时间不等于首页完整加载时间，也不是书籍下载速度。
+
+</details>
+
+检测分类设计参考 [heartleo/zlib](https://github.com/heartleo/zlib/blob/main/domain_probe.go)，本项目采用独立的轻量实现，不依赖其客户端。
 
 ## 一起维护
 

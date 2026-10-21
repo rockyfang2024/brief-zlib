@@ -9,6 +9,10 @@ description: 查找、实测并整理当前可用的 Z-Library（zlib、Z站）�
 
 ## 快速查找
 
+本仓库已提供 `sources.json` 和 `scripts/check_links.py`。在仓库根目录先运行 `python3 scripts/check_links.py --output /tmp/brief-zlib-results.json`，有用户提供或环境已配置的代理时追加 `--proxy 实际代理地址`。默认各路径顺序测 3 次，JSON 包含状态、最终地址、时间、成功次数和耗时中位数；脚本不会改写 README。跨平台时使用系统临时目录。技能单独安装时不包含仓库脚本，找不到脚本就按下文 GET 流程执行，不假定固定安装路径。
+
+新候选记录到 `sources.json` 时保留 `source`，只在核对来源后启用。`allowed_hosts` 限定认可的最终域名；出现新跳转先人工检查，再决定是否增加。脚本的 `unconfirmed` 不等于失效；可阅读页面继续确认。不要把任意 200 或泛用验证标题认定为 Z-Library。
+
 1. 优先检查用户给定网址和目标 README 已有的网址。已有地址可用且满足数量要求时，不必继续广泛搜索。
 2. 从 GitHub 项目获取候选链接。以下是发现线索，不是永久有效地址清单：
    - https://github.com/dongyubin/Awesome-Zlibrary
@@ -70,6 +74,8 @@ curl --silent --show-error --location --max-redirs 5 \
 - “最新可用时间”使用本次实际到达首页或站点验证页的时间与用户时区；到达验证页也应更新，不保留更早的首页确认日期作为最新可用时间。人工确认只有日期时只写日期，不补造精确时间。仅复用历史证据时保留历史日期。
 
 ## 输出与文档更新
+
+读取 JSON 时检查每个路径的 `successful_attempts`、`attempts`、`unstable` 和 `samples`。`latest_available_at` 为 UTC，转换成用户时区后更新日期；不要用整体运行时间替代成功时间。`challenge` 可收录但必须说明只到验证页；混合失败时注明波动。代理路径只在显式配置后执行，脚本不判断全国性的魔法网络要求。保持人工结论，说明本次观察。不要因一次失败自动删除原有已确认地址，应先复测或报告待复核。
 
 仅将按上述标准确认可用的地址放入最终表格，包括已到达站点验证页的入口。证据不足或失败的候选放在聊天说明中，不混入“可用”表；一个也无法确认时，直说未确认，不捏造结果。
 

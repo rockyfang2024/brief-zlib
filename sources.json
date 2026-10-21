@@ -1,0 +1,14 @@
+[
+  {
+    "url": "https://zlib.bz/",
+    "source": "https://github.com/heartleo/zlib",
+    "enabled": true,
+    "allowed_hosts": ["zlib.bz"]
+  },
+  {
+    "url": "https://zliba.ru/",
+    "source": "https://github.com/heartleo/zlib",
+    "enabled": true,
+    "allowed_hosts": ["zliba.ru", "zlib.bz", "en.per101.ru", "en.eng101.ru"]
+  }
+]
